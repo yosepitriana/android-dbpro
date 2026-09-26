@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../widgets/metric_card.dart';
+import '../main.dart';
 import 'login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override Widget build(BuildContext context)=>Scaffold(
     body:SafeArea(child:Column(children:[
       Padding(padding:const EdgeInsets.symmetric(horizontal:20,vertical:4),child:Row(children:[
-        IconButton(onPressed:(){},icon:const Icon(Icons.dark_mode_outlined)),
+        IconButton(onPressed:()=>DBproApp.of(context).toggleTheme(),icon:Icon(Theme.of(context).brightness==Brightness.dark?Icons.light_mode_outlined:Icons.dark_mode_outlined)),
         const Expanded(child:Center(child:Text('DBpro',style:TextStyle(fontSize:28,fontWeight:FontWeight.w800)))),
         IconButton(onPressed:_load,icon:loading?const SizedBox(width:22,height:22,child:CircularProgressIndicator(strokeWidth:2)):const Icon(Icons.refresh)),
       ])),
