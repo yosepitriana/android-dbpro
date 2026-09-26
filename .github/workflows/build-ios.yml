@@ -1,0 +1,44 @@
+name: Build iOS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Bootstrap Flutter iOS platform
+        run: flutter create --platforms=ios --org id.dbpro --project-name dpro_mobile .
+
+      - name: Configure Face ID description
+        run: |
+          /usr/libexec/PlistBuddy -c "Delete :NSFaceIDUsageDescription" ios/Runner/Info.plist 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Add :NSFaceIDUsageDescription string DBpro menggunakan Face ID untuk masuk dengan aman ke aplikasi." ios/Runner/Info.plist
+
+      - name: Dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Build iOS without signing
+        run: flutter build ios --debug --no-codesign
+
+      - name: Package unsigned iOS build
+        run: |
+          cd build/ios/iphoneos
+          zip -r ../../../dbpro-mobile-ios-unsigned.zip Runner.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbpro-mobile-ios-unsigned
+          path: dbpro-mobile-ios-unsigned.zip
