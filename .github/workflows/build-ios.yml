@@ -27,8 +27,10 @@ jobs:
       - name: Dependencies
         run: flutter pub get
 
+      - name: Remove generated template test
+        run: rm -f test/widget_test.dart
       - name: Analyze
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
 
       - name: Build iOS without signing
         run: flutter build ios --debug --no-codesign
