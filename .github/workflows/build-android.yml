@@ -1,0 +1,37 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Bootstrap Flutter platform files
+        run: flutter create --platforms=android --org id.dbpro --project-name dpro_mobile .
+      - name: Restore DBpro biometric activity
+        run: |
+          cat > android/app/src/main/kotlin/id/dbpro/dpro_mobile/MainActivity.kt <<'EOF'
+          package id.dbpro.dpro_mobile
+          import io.flutter.embedding.android.FlutterFragmentActivity
+          class MainActivity: FlutterFragmentActivity()
+          EOF
+          sed -i 's/android:name=".MainActivity"/android:name=".MainActivity"/' android/app/src/main/AndroidManifest.xml
+          sed -i '/<manifest/a\    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>' android/app/src/main/AndroidManifest.xml
+      - name: Dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze
+      - name: Build debug APK
+        run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dbpro-mobile-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
