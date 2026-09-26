@@ -1,16 +1,27 @@
 # DBpro Mobile
 
-Cross-platform mobile application for DBpro.
+Cross-platform Flutter application for DBpro Central monitoring.
 
 ## Targets
 - Android (APK/AAB)
 - iOS (IPA)
 
-## Technology
-- Flutter / Dart
-- Material 3
-- Secure storage
-- Biometric authentication
-- DBpro API integration
+## Implemented foundation
+- Login to existing DBpro Central API
+- Secure access-token storage
+- Biometric authentication service
+- Monitoring dashboard with 2-second refresh
+- CPU, Memory, Disk and Network cards
+- Realtime series charts
+- Service & Container status
+- Incident history
+- LIVE/OFFLINE state
+- Light/Dark mode
+- Logout and automatic handling of expired sessions
 
-This repository is the new cross-platform mobile foundation. The existing native Android application remains separate as a reference during migration.
+## Native bootstrap required
+This repository was initialized remotely and currently contains the Flutter application layer. Before building APK/AAB/IPA, run Flutter project bootstrap locally so Flutter generates the native `android/` and `ios/` folders.
+
+After native bootstrap, configure `local_auth` requirements for Android biometric authentication and iOS Face ID/Touch ID, then test on real devices.
+
+The existing Java-native DBpro application remains separate and is used as the migration reference.
